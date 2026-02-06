@@ -57,78 +57,115 @@
       color: var(--text-on-bg);
     }
 
-    /* Mode selection: clear primary actions */
+    /* Mode selection: card-like container with soft background */
     #mode-screen {
       text-align: center;
-      padding: 1.5rem;
+      padding: 2.25rem 2rem;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      max-width: 500px;
+      width: 100%;
     }
     #mode-screen h2 {
-      margin-bottom: 1.25rem;
-      font-weight: 400;
-      font-size: 1.1rem;
-      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+      font-weight: 500;
+      font-size: 1.15rem;
+      color: var(--text-on-bg);
     }
+    
+    /* Symbol selector: improved styling */
     .symbol-selector {
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1.75rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
     .symbol-selector label {
       display: block;
-      margin-bottom: 0.65rem;
-      font-size: 0.95rem;
+      margin-bottom: 0.85rem;
+      font-size: 0.9rem;
       color: var(--text-muted);
-      font-weight: 400;
+      font-weight: 500;
+      letter-spacing: 0.02em;
     }
     .symbol-buttons {
       display: flex;
-      gap: 0.5rem;
+      gap: 0.6rem;
       justify-content: center;
       flex-wrap: wrap;
     }
     .symbol-btn {
-      padding: 0.6rem 1.1rem;
+      padding: 0.65rem 1.2rem;
       font-size: 0.9rem;
       font-weight: 500;
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.25);
       border-radius: var(--radius-sm);
       cursor: pointer;
-      background: var(--btn-secondary-bg);
+      background: rgba(255, 255, 255, 0.08);
       color: var(--text-on-bg);
-      transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+      transition: all 0.25s ease;
+      position: relative;
     }
     .symbol-btn:hover {
-      background: var(--btn-secondary-hover);
-      border-color: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.18);
+      border-color: rgba(255, 255, 255, 0.4);
+      transform: translateY(-1px);
     }
     .symbol-btn.selected {
-      background: var(--btn-primary);
-      border-color: var(--btn-primary);
+      background: linear-gradient(135deg, #5c7cfa 0%, #4c6ef5 100%);
+      border-color: #5c7cfa;
       color: #fff;
+      box-shadow: 0 4px 12px rgba(92, 124, 250, 0.3);
     }
     .symbol-btn.selected:hover {
-      background: var(--btn-primary-hover);
+      background: linear-gradient(135deg, #6b8cff 0%, #5c7cfa 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(92, 124, 250, 0.4);
     }
+    
+    /* Mode buttons: primary actions with gradients */
     .mode-buttons {
       display: flex;
-      gap: 0.75rem;
+      gap: 0.85rem;
       justify-content: center;
       flex-wrap: wrap;
     }
     .mode-btn {
-      padding: 0.875rem 1.75rem;
+      padding: 1rem 2rem;
       font-size: 1rem;
-      font-weight: 500;
+      font-weight: 600;
       border: none;
       border-radius: var(--radius);
       cursor: pointer;
-      background: var(--btn-primary);
+      background: linear-gradient(135deg, #495057 0%, #343a40 100%);
       color: #fff;
-      box-shadow: var(--shadow);
-      transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .mode-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s ease;
+    }
+    .mode-btn:hover::before {
+      left: 100%;
     }
     .mode-btn:hover {
-      background: var(--btn-primary-hover);
-      box-shadow: var(--shadow-hover);
-      transform: translateY(1px);
+      background: linear-gradient(135deg, #5a6268 0%, #495057 100%);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      transform: translateY(-2px);
+    }
+    .mode-btn:active {
+      transform: translateY(0);
     }
 
     /* Game area: centered, max-width for readability */
@@ -149,21 +186,40 @@
     }
     .score-box {
       background: var(--score-card-bg);
-      padding: 0.65rem 1rem;
+      padding: 0.75rem 1.15rem;
       border-radius: var(--radius);
       font-weight: 600;
       font-size: 0.95rem;
       border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: background 0.2s ease, box-shadow 0.2s ease;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
     }
     .score-box.active {
-      background: var(--score-card-active);
-      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
+      background: linear-gradient(135deg, rgba(92, 124, 250, 0.25) 0%, rgba(76, 110, 245, 0.2) 100%);
+      box-shadow: 0 0 0 2px rgba(92, 124, 250, 0.4), 0 4px 12px rgba(92, 124, 250, 0.2);
+      border-color: rgba(92, 124, 250, 0.5);
+    }
+    .score-box .player-indicator {
+      font-size: 0.85rem;
+      display: inline-block;
     }
     .turn-indicator {
       font-size: 0.9rem;
-      font-weight: 500;
+      font-weight: 600;
       color: var(--text-on-bg);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 0.85rem;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .turn-indicator .player-dot {
+      font-size: 0.7rem;
+      display: inline-block;
     }
 
     /* Card grid: responsive gap and spacing, dynamically adjusted columns */
@@ -185,6 +241,17 @@
     @media (max-width: 420px) {
       .card-grid {
         gap: 0.5rem;
+      }
+      #mode-screen {
+        padding: 1.75rem 1.5rem;
+      }
+      .mode-btn {
+        padding: 0.85rem 1.5rem;
+        font-size: 0.95rem;
+      }
+      .symbol-btn {
+        padding: 0.55rem 1rem;
+        font-size: 0.85rem;
       }
     }
 
@@ -270,26 +337,39 @@
 
     /* Buttons: primary (Play Again) and secondary (Reset, Back to Menu) */
     .btn {
-      padding: 0.6rem 1.25rem;
+      padding: 0.7rem 1.4rem;
       font-size: 0.95rem;
-      font-weight: 500;
+      font-weight: 600;
       border: none;
       border-radius: var(--radius-sm);
       cursor: pointer;
-      background: var(--btn-primary);
+      background: linear-gradient(135deg, #495057 0%, #343a40 100%);
       color: #fff;
-      transition: background 0.2s ease, border-color 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
     }
     .btn:hover {
-      background: var(--btn-primary-hover);
+      background: linear-gradient(135deg, #5a6268 0%, #495057 100%);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      transform: translateY(-1px);
+    }
+    .btn:active {
+      transform: translateY(0);
     }
     .btn-secondary {
-      background: var(--btn-secondary-bg);
-      border: 1px solid var(--btn-secondary-border);
+      background: rgba(255, 255, 255, 0.12);
+      border: 1.5px solid rgba(255, 255, 255, 0.35);
       color: var(--text-on-bg);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
     .btn-secondary:hover {
-      background: var(--btn-secondary-hover);
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.5);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      transform: translateY(-1px);
     }
     .restart-row {
       margin-top: 1rem;
@@ -304,9 +384,9 @@
 
   <!-- Mode selection (shown at start) -->
   <div id="mode-screen">
-    <h2>Choose game mode</h2>
+    <h2>Choose Game Mode</h2>
     <div class="symbol-selector">
-      <label>Number of symbols:</label>
+      <label>⚙️ Choose Difficulty / Symbols</label>
       <div class="symbol-buttons">
         <button class="symbol-btn selected" data-symbols="4">4 symbols (8 cards)</button>
         <button class="symbol-btn" data-symbols="6">6 symbols (12 cards)</button>
@@ -314,8 +394,8 @@
       </div>
     </div>
     <div class="mode-buttons">
-      <button class="mode-btn" data-mode="single">Single Player</button>
-      <button class="mode-btn" data-mode="two">Two Player (Local)</button>
+      <button class="mode-btn" data-mode="single">🎮 Single Player</button>
+      <button class="mode-btn" data-mode="two">👥 Two Player (Local)</button>
     </div>
   </div>
 
@@ -330,13 +410,13 @@
     <div id="game-over">
       <h3 id="game-over-title"></h3>
       <p id="game-over-message"></p>
-      <button class="btn" id="play-again-btn">Play Again</button>
+      <button class="btn" id="play-again-btn">▶ Play Again</button>
     </div>
 
     <div class="card-grid" id="card-grid"></div>
     <div class="restart-row">
-      <button class="btn" id="restart-btn">Reset / Restart Game</button>
-      <button class="btn btn-secondary" id="back-to-menu-btn">Back to Menu</button>
+      <button class="btn" id="restart-btn">🔄 Reset / Restart Game</button>
+      <button class="btn btn-secondary" id="back-to-menu-btn">⬅ Back to Menu</button>
     </div>
   </div>
 
@@ -437,14 +517,14 @@
       gameOverDiv.style.display = 'none';
 
       if (mode === 'single') {
-        score1Box.innerHTML = 'Score: <span id="score1">' + STARTING_SCORE + '</span>';
+        score1Box.innerHTML = '⭐ Score: <span id="score1">' + STARTING_SCORE + '</span>';
         score2Box.style.display = 'none';
         turnIndicator.style.display = 'none';
       } else {
-        score1Box.innerHTML = 'Player 1: <span id="score1">' + STARTING_SCORE + '</span>';
-        score2Box.innerHTML = 'Player 2: <span id="score2">' + STARTING_SCORE + '</span>';
+        score1Box.innerHTML = '<span class="player-indicator">🔵</span> Player 1: <span id="score1">' + STARTING_SCORE + '</span>';
+        score2Box.innerHTML = '<span class="player-indicator">🟢</span> Player 2: <span id="score2">' + STARTING_SCORE + '</span>';
         score2Box.style.display = 'block';
-        turnIndicator.style.display = 'block';
+        turnIndicator.style.display = 'flex';
         updateTurnIndicator();
         updateScoreBoxActive();
       }
@@ -453,7 +533,8 @@
     }
 
     function updateTurnIndicator() {
-      turnIndicator.textContent = "Player " + gameState.currentPlayer + "'s turn";
+      const playerDot = gameState.currentPlayer === 1 ? '🔵' : '🟢';
+      turnIndicator.innerHTML = '<span class="player-dot">' + playerDot + '</span> Player ' + gameState.currentPlayer + "'s turn";
     }
 
     function updateScoreBoxActive() {
