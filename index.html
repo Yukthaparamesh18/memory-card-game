@@ -68,6 +68,45 @@
       font-size: 1.1rem;
       color: var(--text-muted);
     }
+    .symbol-selector {
+      margin-bottom: 1.5rem;
+    }
+    .symbol-selector label {
+      display: block;
+      margin-bottom: 0.65rem;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+    .symbol-buttons {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .symbol-btn {
+      padding: 0.6rem 1.1rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      background: var(--btn-secondary-bg);
+      color: var(--text-on-bg);
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+    }
+    .symbol-btn:hover {
+      background: var(--btn-secondary-hover);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+    .symbol-btn.selected {
+      background: var(--btn-primary);
+      border-color: var(--btn-primary);
+      color: #fff;
+    }
+    .symbol-btn.selected:hover {
+      background: var(--btn-primary-hover);
+    }
     .mode-buttons {
       display: flex;
       gap: 0.75rem;
@@ -127,12 +166,21 @@
       color: var(--text-on-bg);
     }
 
-    /* Card grid: responsive gap and spacing */
+    /* Card grid: responsive gap and spacing, dynamically adjusted columns */
     .card-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 0.65rem;
       margin-bottom: 1.25rem;
+    }
+    .card-grid.grid-2cols {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .card-grid.grid-3cols {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .card-grid.grid-4cols {
+      grid-template-columns: repeat(4, 1fr);
     }
     @media (max-width: 420px) {
       .card-grid {
@@ -257,6 +305,14 @@
   <!-- Mode selection (shown at start) -->
   <div id="mode-screen">
     <h2>Choose game mode</h2>
+    <div class="symbol-selector">
+      <label>Number of symbols:</label>
+      <div class="symbol-buttons">
+        <button class="symbol-btn selected" data-symbols="4">4 symbols (8 cards)</button>
+        <button class="symbol-btn" data-symbols="6">6 symbols (12 cards)</button>
+        <button class="symbol-btn" data-symbols="8">8 symbols (16 cards)</button>
+      </div>
+    </div>
     <div class="mode-buttons">
       <button class="mode-btn" data-mode="single">Single Player</button>
       <button class="mode-btn" data-mode="two">Two Player (Local)</button>
@@ -293,6 +349,7 @@
     // ========== GAME STATE ==========
     let gameState = {
       mode: null,           // 'single' or 'two'
+      symbolCount: 8,       // number of symbols to use (4, 6, or 8)
       cards: [],            // array of { id, value, element }
       flippedIndices: [],   // indices of currently flipped (unmatched) cards
       score1: STARTING_SCORE,
@@ -316,11 +373,13 @@
     const gameOverMessage = document.getElementById('game-over-message');
 
     // ========== GAME INITIALIZATION ==========
-    // Build deck: each Greek letter appears exactly twice (matching pairs).
+    // Build deck: each selected Greek letter appears exactly twice (matching pairs).
     // Cards are shuffled randomly at the start of every game.
+    // Uses only the first N symbols from GREEK_LETTERS based on gameState.symbolCount.
     function createDeck() {
       const deck = [];
-      GREEK_LETTERS.forEach((letter, i) => {
+      const symbolsToUse = GREEK_LETTERS.slice(0, gameState.symbolCount);
+      symbolsToUse.forEach((letter, i) => {
         deck.push({ id: i * 2, value: letter });
         deck.push({ id: i * 2 + 1, value: letter });
       });
@@ -333,9 +392,24 @@
     }
 
     // Create card DOM elements and bind click handlers.
+    // Dynamically adjusts grid columns based on number of cards.
     function renderCards() {
       cardGrid.innerHTML = '';
       gameState.cards = [];
+      
+      // Remove existing grid column classes
+      cardGrid.classList.remove('grid-2cols', 'grid-3cols', 'grid-4cols');
+      
+      // Set grid columns based on symbol count
+      const totalCards = gameState.symbolCount * 2;
+      if (totalCards === 8) {
+        cardGrid.classList.add('grid-2cols');  // 2x4 grid
+      } else if (totalCards === 12) {
+        cardGrid.classList.add('grid-3cols');  // 3x4 grid
+      } else {
+        cardGrid.classList.add('grid-4cols');   // 4x4 grid (default)
+      }
+      
       const deck = createDeck();
       deck.forEach((cardData, index) => {
         const card = document.createElement('div');
@@ -453,8 +527,9 @@
 
     // ========== GAME-OVER CONDITIONS ==========
     // Game ends when: (1) all pairs matched, or (2) single-player score reaches 0, or (3) both players at 0 in two-player.
+    // Uses gameState.symbolCount to determine total pairs (not GREEK_LETTERS.length).
     function checkGameOver() {
-      const totalPairs = GREEK_LETTERS.length;
+      const totalPairs = gameState.symbolCount;
       const allMatched = gameState.matchedCount === totalPairs * 2;
       const singleZero = gameState.mode === 'single' && gameState.score1 <= 0;
       const bothZero = gameState.mode === 'two' && gameState.score1 <= 0 && gameState.score2 <= 0;
@@ -517,10 +592,27 @@
       gameState.mode = null;
     }
 
+    // ========== SYMBOL COUNT SELECTION ==========
+    // Handle symbol count selection: update UI and store selection in gameState.
+    function handleSymbolSelection(count) {
+      gameState.symbolCount = parseInt(count);
+      // Update button visual states
+      document.querySelectorAll('.symbol-btn').forEach(btn => {
+        btn.classList.toggle('selected', btn.dataset.symbols === count);
+      });
+    }
+
     // ========== EVENT LISTENERS ==========
+    // Symbol count selection buttons
+    document.querySelectorAll('.symbol-btn').forEach(btn => {
+      btn.addEventListener('click', () => handleSymbolSelection(btn.dataset.symbols));
+    });
+    
+    // Mode selection buttons
     document.querySelectorAll('.mode-btn').forEach(btn => {
       btn.addEventListener('click', () => startGame(btn.dataset.mode));
     });
+    
     document.getElementById('play-again-btn').addEventListener('click', restartGame);
     document.getElementById('restart-btn').addEventListener('click', () => {
       if (gameState.mode) restartGame();
